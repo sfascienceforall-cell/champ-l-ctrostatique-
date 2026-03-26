@@ -1,0 +1,253 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#fff;font-family:system-ui,-apple-system,sans-serif;}
+canvas{display:block;border-radius:12px;border:1.5px solid #e8e8e8;cursor:default;touch-action:none;}
+.cc{display:flex;align-items:center;gap:8px;margin:5px 0;}
+.cc-label{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0;}
+.val{min-width:58px;text-align:center;font-size:13px;font-weight:500;color:#2c2c2a;background:#f5f5f5;border:1.5px solid #d0d0d0;border-radius:20px;padding:5px 10px;}
+.btn{padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid #d0d0d0;background:#fff;color:#2c2c2a;}
+.btn.active{border-color:#185fa5;background:#e6f1fb;color:#185fa5;}
+</style>
+
+<canvas id="cv" style="width:100%;height:60vh;min-height:320px;"></canvas>
+
+<div style="font-size:13px;padding:10px 16px;border-radius:20px;background:#f5f5f5;border:1.5px solid #d0d0d0;color:#2c2c2a;margin:6px 0;font-family:ui-monospace,monospace;line-height:1.8;">
+  E = k·Q/r² &nbsp;|&nbsp; k = 9×10⁹ N·m²/C² &nbsp;|&nbsp; Maintiens le clic sur une charge pour la déplacer
+</div>
+
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0 6px;">
+  <span style="font-size:13px;font-weight:500;color:#2c2c2a;background:#f5f5f5;border:1.5px solid #d0d0d0;border-radius:20px;padding:6px 14px;white-space:nowrap;">Nb de charges</span>
+  <div style="display:flex;gap:6px;">
+    <button class="btn active" id="nb1" onclick="setNb(1)">1</button>
+    <button class="btn" id="nb2" onclick="setNb(2)">2</button>
+    <button class="btn" id="nb3" onclick="setNb(3)">3</button>
+  </div>
+</div>
+
+<div id="ctrls"></div>
+
+<script>
+const cv=document.getElementById('cv');
+const K=9e9;
+let W=0,H=0,nb=1,dragging=-1;
+
+const COLORS=['#E24B4A','#378ADD','#1D9E75'];
+const BGCOLORS=['#fcebeb','#e6f1fb','#e1f5ee'];
+const BCOLORS=['#f09595','#b5d4f4','#9FE1CB'];
+
+const charges=[
+  {x:0.5,y:0.5,q:3},
+  {x:0.28,y:0.5,q:-3},
+  {x:0.72,y:0.5,q:2},
+];
+
+function setNb(n){
+  nb=n;
+  [1,2,3].forEach(i=>{document.getElementById('nb'+i).className=i===n?'btn active':'btn';});
+  buildControls();
+}
+
+function buildControls(){
+  const div=document.getElementById('ctrls');
+  div.innerHTML='';
+  for(let i=0;i<nb;i++){
+    const q=charges[i].q;
+    const row=document.createElement('div');
+    row.className='cc';
+    row.innerHTML=`
+      <div class="cc-label" style="background:${BGCOLORS[i]};border:2px solid ${COLORS[i]};color:${COLORS[i]};">Q${i+1}</div>
+      <input type="range" id="q${i}" min="-5" max="5" value="${q}" step="0.5" style="flex:1;accent-color:${COLORS[i]};">
+      <span class="val" id="qv${i}" style="border-color:${BCOLORS[i]};color:${COLORS[i]};">${q>=0?'+':''}${q} nC</span>
+    `;
+    div.appendChild(row);
+    document.getElementById('q'+i).addEventListener('input',()=>{
+      charges[i].q=parseFloat(document.getElementById('q'+i).value);
+      const v=charges[i].q;
+      document.getElementById('qv'+i).textContent=(v>=0?'+':'')+v+' nC';
+    });
+  }
+}
+
+function syncSize(){
+  const r=cv.getBoundingClientRect();
+  const nW=Math.round(r.width)||700;
+  const nH=Math.round(r.height)||360;
+  if(nW!==W||nH!==H){
+    W=nW;H=nH;cv.width=W;cv.height=H;
+    charges[0].x=0.5;charges[0].y=0.5;
+    charges[1].x=0.28;charges[1].y=0.5;
+    charges[2].x=0.72;charges[2].y=0.5;
+  }
+}
+
+function px(c){return c.x*W;}
+function py(c){return c.y*H;}
+function chargeRadius(q){return 14+Math.abs(q)*2;}
+
+function fieldAt(x,y){
+  let Ex=0,Ey=0;
+  for(let i=0;i<nb;i++){
+    const c=charges[i];
+    const dx=x-px(c),dy=y-py(c);
+    const r2=dx*dx+dy*dy;
+    if(r2<4) continue;
+    const r=Math.sqrt(r2);
+    const E=K*Math.abs(c.q*1e-9)/(r2*1e-4);
+    const sign=c.q>=0?1:-1;
+    Ex+=sign*E*dx/r; Ey+=sign*E*dy/r;
+  }
+  return{Ex,Ey};
+}
+
+function drawArrowHead(ctx,x,y,dx,dy,size,color){
+  const len=Math.sqrt(dx*dx+dy*dy);
+  if(len<0.001) return;
+  const nx=dx/len,ny=dy/len;
+  const ang=Math.atan2(ny,nx);
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(ang);
+  ctx.fillStyle=color;
+  ctx.beginPath();
+  ctx.moveTo(size,0);
+  ctx.lineTo(-size*0.6,-size*0.5);
+  ctx.lineTo(-size*0.6, size*0.5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function draw(){
+  syncSize();
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+
+  const nLines=20;
+  const startR=20;
+  // intervalle en nombre de steps entre deux flèches
+  const ARROW_EVERY=60;
+
+  for(let i=0;i<nb;i++){
+    const c=charges[i];
+    if(c.q===0) continue;
+    const sign=c.q>0?1:-1;
+    const col=COLORS[i];
+
+    for(let l=0;l<nLines;l++){
+      const ang=l*2*Math.PI/nLines;
+      let x=px(c)+startR*Math.cos(ang);
+      let y=py(c)+startR*Math.sin(ang);
+
+      // stocker les points de la ligne
+      const pts=[{x,y}];
+      let prevDx=0,prevDy=0;
+
+      for(let s=0;s<600;s++){
+        const {Ex,Ey}=fieldAt(x,y);
+        const En=Math.sqrt(Ex*Ex+Ey*Ey);
+        if(En<1e-6) break;
+        const step=sign*4;
+        const nx=step*Ex/En, ny=step*Ey/En;
+        x+=nx; y+=ny;
+        prevDx=nx; prevDy=ny;
+        if(x<0||x>W||y<0||y>H) break;
+        let near=false;
+        for(let j=0;j<nb;j++){
+          if(j===i) continue;
+          const dc=charges[j];
+          if(charges[j].q*c.q<0&&Math.sqrt((x-px(dc))**2+(y-py(dc))**2)<chargeRadius(dc.q)+4){near=true;break;}
+        }
+        if(near) break;
+        pts.push({x,y,dx:nx,dy:ny});
+      }
+
+      // tracer la ligne
+      ctx.beginPath();
+      ctx.strokeStyle=col+'66'; ctx.lineWidth=1.2;
+      ctx.moveTo(pts[0].x,pts[0].y);
+      for(let p=1;p<pts.length;p++) ctx.lineTo(pts[p].x,pts[p].y);
+      ctx.stroke();
+
+      // flèches réparties le long de la ligne
+      const arrowPositions=[
+        Math.floor(pts.length*0.25),
+        Math.floor(pts.length*0.55),
+        Math.floor(pts.length*0.80),
+      ];
+      for(const ap of arrowPositions){
+        if(ap>0&&ap<pts.length){
+          const pt=pts[ap];
+          if(pt.dx!==undefined){
+            drawArrowHead(ctx,pt.x,pt.y,pt.dx,pt.dy,5,col+'cc');
+          }
+        }
+      }
+    }
+  }
+
+  // grille vecteurs
+  const gStep=44;
+  for(let gx=gStep/2;gx<W;gx+=gStep){
+    for(let gy=gStep/2;gy<H;gy+=gStep){
+      const {Ex,Ey}=fieldAt(gx,gy);
+      const En=Math.sqrt(Ex*Ex+Ey*Ey);
+      if(En<1) continue;
+      const sc=Math.min(16,Math.log10(En+1)*2.2);
+      const nx=Ex/En,ny=Ey/En;
+      const alpha=Math.min(0.5,sc/16+0.1);
+      ctx.strokeStyle=`rgba(100,130,190,${alpha})`; ctx.lineWidth=0.9;
+      ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx+nx*sc,gy+ny*sc); ctx.stroke();
+    }
+  }
+
+  // charges
+  for(let i=0;i<nb;i++){
+    const c=charges[i];
+    const r=chargeRadius(c.q);
+    const isPos=c.q>0,isZero=c.q===0;
+    ctx.beginPath(); ctx.arc(px(c),py(c),r,0,Math.PI*2);
+    ctx.fillStyle=isZero?'#f5f5f5':BGCOLORS[i]; ctx.fill();
+    ctx.strokeStyle=COLORS[i]; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.fillStyle=COLORS[i]; ctx.font='500 16px system-ui'; ctx.textAlign='center';
+    ctx.fillText(isZero?'0':isPos?'+':'−',px(c),py(c)+6);
+    ctx.fillStyle=COLORS[i]; ctx.font='500 12px system-ui';
+    const qv=c.q;
+    ctx.fillText('Q'+(i+1)+' '+(qv>=0?'+':'')+qv+'nC',px(c),py(c)+r+15);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+function getPos(e){
+  const r=cv.getBoundingClientRect();
+  const touch=e.touches?e.touches[0]:e;
+  return{x:touch.clientX-r.left,y:touch.clientY-r.top};
+}
+function startDrag(e){
+  const {x,y}=getPos(e);
+  for(let i=0;i<nb;i++){
+    const c=charges[i];
+    const r=chargeRadius(c.q)+8;
+    if(Math.sqrt((x-px(c))**2+(y-py(c))**2)<r){dragging=i;cv.style.cursor='grabbing';break;}
+  }
+}
+function moveDrag(e){
+  if(dragging<0) return;
+  e.preventDefault();
+  const {x,y}=getPos(e);
+  charges[dragging].x=Math.max(0.02,Math.min(0.98,x/W));
+  charges[dragging].y=Math.max(0.02,Math.min(0.98,y/H));
+}
+function endDrag(){dragging=-1;cv.style.cursor='default';}
+
+cv.addEventListener('mousedown',startDrag);
+cv.addEventListener('mousemove',moveDrag);
+cv.addEventListener('mouseup',endDrag);
+cv.addEventListener('touchstart',startDrag,{passive:false});
+cv.addEventListener('touchmove',moveDrag,{passive:false});
+cv.addEventListener('touchend',endDrag);
+
+buildControls();
+draw();
+</script>
