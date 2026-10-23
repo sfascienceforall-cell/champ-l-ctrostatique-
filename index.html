@@ -68,13 +68,17 @@ a{color:inherit}
 @media (max-width:520px){.row,div:has(>input[type=range]){flex-wrap:wrap!important}
   .row>.pill:first-child,div:has(>input[type=range])>.pill:first-child{min-width:0!important;flex:1 1 100%}
   input[type=range]{min-width:0!important}.val{min-width:0!important}}
-.val{background:none!important;border:0!important;border-radius:0!important;padding:0!important;font:600 .9rem var(--f-num)!important;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
-.btn{background:var(--paper)!important;border:1px solid var(--line2)!important;border-radius:7px!important;color:var(--ink2)!important;
-  font:700 .82rem var(--f-ui)!important;padding:7px 13px!important;transition:background .15s,border-color .15s;cursor:pointer}
+.val{background:none!important;border:0!important;border-radius:0!important;padding:0!important;font:800 .92rem var(--f-ui)!important;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink);white-space:nowrap}
+.btn{background:var(--paper)!important;border:1px solid var(--line2)!important;border-radius:8px!important;color:var(--ink)!important;
+  font:800 .82rem var(--f-ui)!important;letter-spacing:.005em;padding:8px 14px!important;transition:background .15s,border-color .15s;cursor:pointer}
+.btn:active{transform:translateY(1px)}
 .btn:hover{background:var(--press)!important;border-color:var(--faint)!important}
 .btn.on{background:var(--navy)!important;border-color:var(--navy)!important;color:#fff!important;box-shadow:none}
-.fml{background:var(--sel)!important;border:0!important;border-radius:10px!important;font:400 1.06rem/1.7 var(--f-math)!important;color:var(--ink);padding:10px 14px!important;margin:12px 0!important}
-.info{background:var(--bg)!important;border:1px solid var(--line)!important;border-radius:10px!important;font:500 .84rem/1.8 var(--f-num)!important;color:var(--muted)!important;padding:9px 14px!important}
+.fml{background:var(--sel)!important;border:0!important;border-left:4px solid var(--navy)!important;border-radius:10px!important;font:600 1rem/1.75 var(--f-ui)!important;color:var(--ink);padding:12px 16px!important;margin:12px 0!important}
+.fml b,.fml strong{font-weight:800}
+.fml sub,.fml sup,.info sub,.info sup{font-size:.72em}
+.info{background:var(--bg)!important;border:1px solid var(--line)!important;border-radius:10px!important;font:600 .86rem/1.8 var(--f-ui)!important;font-variant-numeric:tabular-nums;color:var(--muted)!important;padding:10px 14px!important}
+.info b,.info strong{font-weight:800}
 select{font:600 .86rem var(--f-ui)!important;border:1px solid var(--line2)!important;border-radius:7px!important;background:var(--paper)!important;color:var(--ink)!important;padding:6px 8px!important}
 input[type=range]{-webkit-appearance:none;appearance:none;height:24px;background:linear-gradient(var(--line),var(--line)) center/100% 4px no-repeat;cursor:pointer;--pc:var(--blue)}
 input[type=range]::-webkit-slider-runnable-track{height:4px;background:transparent;border-radius:2px}
@@ -92,7 +96,7 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
 .sfa-list a{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:baseline;padding:7px 8px;border-radius:8px;text-decoration:none;font:600 13px/1.35 var(--f-ui);color:var(--ink2)}
 .sfa-list a:hover{background:var(--press)}
 .sfa-list a.on{background:var(--sel);color:var(--chip-ink)}
-.sfa-list a i{font:600 11px var(--f-num);font-style:normal;color:var(--faint)}
+.sfa-list a i{font:800 11px var(--f-ui);font-style:normal;color:var(--faint)}
 .sfa-promo{background:var(--navy);color:#fff;border-radius:12px;padding:16px}
 .sfa-promo small{display:block;font:800 10px var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin-bottom:6px}
 .sfa-promo b{display:block;font:800 16px/1.3 var(--f-ui);margin-bottom:12px}
@@ -132,8 +136,8 @@ new MutationObserver(ms=>ms.forEach(m=>{if(m.target.classList&&m.target.classLis
 </script>
 <header class="sfa-top"><div class="in">
   <a class="sfa-logo" href="https://sfascienceforall-cell.github.io/simulations/"><i>SFA</i>Science For All</a>
-  <nav class="sfa-nav"><a class="on" href="https://sfascienceforall-cell.github.io/simulations/">Simulations</a><a href="#">Prépa médecine</a></nav>
-  <a class="sfa-cta" href="#">Découvrir la prépa</a></div></header>
+  <nav class="sfa-nav"><a class="on" href="https://sfascienceforall-cell.github.io/simulations/">Simulations</a><a href="https://sfascienceforall-cell.github.io/simulations/#EX">Exercices</a><a href="https://sfascienceforall-cell.github.io/simulations/prepa/">Prépa médecine</a></nav>
+  <a class="sfa-cta" href="https://sfascienceforall-cell.github.io/simulations/prepa/">Découvrir la prépa</a></div></header>
 <div class="sfa-page">
 <nav class="sfa-crumbs" aria-label="Fil d'Ariane"><a href="https://sfascienceforall-cell.github.io/simulations/">Simulations</a>›<a href="https://sfascienceforall-cell.github.io/simulations/#PH8">PH8 · Électrostatique</a>›<b>Champ électrostatique</b></nav>
 <div class="sfa-grid"><main style="min-width:0">
@@ -206,7 +210,7 @@ function syncSize(){
   const nW=Math.round(r.width)||700;
   const nH=Math.round(r.height)||360;
   if(nW!==W||nH!==H){
-    W=nW;H=nH;cv.width=W;cv.height=H;
+    W=nW;H=nH;cv.width=Math.round(W*(window.devicePixelRatio||1));cv.height=Math.round(H*(window.devicePixelRatio||1));
     charges[0].x=0.5;charges[0].y=0.5;
     charges[1].x=0.28;charges[1].y=0.5;
     charges[2].x=0.72;charges[2].y=0.5;
@@ -243,8 +247,9 @@ function drawArrowHead(ctx,x,y,dx,dy,size,color){
   ctx.fillStyle=color;
   ctx.beginPath();
   ctx.moveTo(size,0);
-  ctx.lineTo(-size*0.6,-size*0.5);
-  ctx.lineTo(-size*0.6, size*0.5);
+  ctx.lineTo(-size*0.8,-size*0.6);
+  ctx.lineTo(-size*0.45,0);
+  ctx.lineTo(-size*0.8, size*0.6);
   ctx.closePath();
   ctx.fill();
   ctx.restore();
@@ -252,8 +257,12 @@ function drawArrowHead(ctx,x,y,dx,dy,size,color){
 
 function draw(){
   syncSize();
-  const ctx=cv.getContext('2d');
-  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+  const ctx=cv.getContext('2d');const dpr=window.devicePixelRatio||1;ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);ctx.lineCap='round';ctx.lineJoin='round';
+  // grille discrète
+  ctx.strokeStyle='#f3f5f8';ctx.lineWidth=1;
+  for(let gx=22;gx<W;gx+=44){ctx.beginPath();ctx.moveTo(Math.round(gx)+.5,0);ctx.lineTo(Math.round(gx)+.5,H);ctx.stroke();}
+  for(let gy=22;gy<H;gy+=44){ctx.beginPath();ctx.moveTo(0,Math.round(gy)+.5);ctx.lineTo(W,Math.round(gy)+.5);ctx.stroke();}
 
   const nLines=20;
   const startR=20;
@@ -264,7 +273,7 @@ function draw(){
     const c=charges[i];
     if(c.q===0) continue;
     const sign=c.q>0?1:-1;
-    const col=COLORS[i];
+    const col='#5b6b80';
 
     for(let l=0;l<nLines;l++){
       const ang=l*2*Math.PI/nLines;
@@ -273,7 +282,7 @@ function draw(){
 
       // stocker les points de la ligne
       const pts=[{x,y}];
-      let prevDx=0,prevDy=0;
+      let prevDx=0,prevDy=0,endNear=false;
 
       for(let s=0;s<600;s++){
         const {Ex,Ey}=fieldAt(x,y);
@@ -290,13 +299,15 @@ function draw(){
           const dc=charges[j];
           if(charges[j].q*c.q<0&&Math.sqrt((x-px(dc))**2+(y-py(dc))**2)<chargeRadius(dc.q)+4){near=true;break;}
         }
-        if(near) break;
+        if(near){endNear=true;break;}
         pts.push({x,y,dx:nx,dy:ny});
       }
 
+      // une ligne qui va d'une charge − à une charge + est déjà tracée depuis la charge + : on ne la dessine pas deux fois
+      if(sign<0&&endNear) continue;
       // tracer la ligne
       ctx.beginPath();
-      ctx.strokeStyle=col+'66'; ctx.lineWidth=1.2;
+      ctx.strokeStyle='rgba(91,107,128,0.55)'; ctx.lineWidth=1.5;
       ctx.moveTo(pts[0].x,pts[0].y);
       for(let p=1;p<pts.length;p++) ctx.lineTo(pts[p].x,pts[p].y);
       ctx.stroke();
@@ -311,45 +322,58 @@ function draw(){
         if(ap>0&&ap<pts.length){
           const pt=pts[ap];
           if(pt.dx!==undefined){
-            drawArrowHead(ctx,pt.x,pt.y,pt.dx,pt.dy,5,col+'cc');
+            drawArrowHead(ctx,pt.x,pt.y,pt.dx,pt.dy,6,'#3d4b5e');
           }
         }
       }
     }
   }
 
-  // grille vecteurs
+  // grille de petits vecteurs E (direction, intensité en log)
   const gStep=44;
   for(let gx=gStep/2;gx<W;gx+=gStep){
     for(let gy=gStep/2;gy<H;gy+=gStep){
+      let near=false;for(let j=0;j<nb;j++){if(Math.hypot(gx-px(charges[j]),gy-py(charges[j]))<chargeRadius(charges[j].q)+10)near=true;}
+      if(near)continue;
       const {Ex,Ey}=fieldAt(gx,gy);
       const En=Math.sqrt(Ex*Ex+Ey*Ey);
       if(En<1) continue;
       const sc=Math.min(16,Math.log10(En+1)*2.2);
       const nx=Ex/En,ny=Ey/En;
-      const alpha=Math.min(0.5,sc/16+0.1);
-      ctx.strokeStyle=`rgba(100,130,190,${alpha})`; ctx.lineWidth=0.9;
-      ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx+nx*sc,gy+ny*sc); ctx.stroke();
+      const alpha=Math.min(0.55,sc/16*0.5+0.12);
+      ctx.strokeStyle=`rgba(55,138,221,${alpha})`; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(gx-nx*sc/2,gy-ny*sc/2); ctx.lineTo(gx+nx*sc/2,gy+ny*sc/2); ctx.stroke();
+      if(sc>5)drawArrowHead(ctx,gx+nx*sc/2,gy+ny*sc/2,nx,ny,3.5,`rgba(55,138,221,${alpha})`);
     }
   }
 
-  // charges
+  const placed=[];
+  // charges : sphère (rouge si +, bleue si −) avec anneau de la couleur du curseur Qi
   for(let i=0;i<nb;i++){
     const c=charges[i];
-    const r=chargeRadius(c.q);
+    const r=chargeRadius(c.q),X=px(c),Y=py(c);
     const isPos=c.q>0,isZero=c.q===0;
-    ctx.beginPath(); ctx.arc(px(c),py(c),r,0,Math.PI*2);
-    ctx.fillStyle=isZero?'#f5f5f5':BGCOLORS[i]; ctx.fill();
-    ctx.strokeStyle=COLORS[i]; ctx.lineWidth=2.5; ctx.stroke();
-    ctx.fillStyle=COLORS[i]; ctx.font='500 16px Mulish,system-ui,sans-serif'; ctx.textAlign='center';
-    ctx.fillText(isZero?'0':isPos?'+':'−',px(c),py(c)+6);
-    ctx.fillStyle=COLORS[i]; ctx.font='500 12px Mulish,system-ui,sans-serif';
+    const g=ctx.createRadialGradient(X-r*0.35,Y-r*0.4,r*0.15,X,Y,r);
+    if(isZero){g.addColorStop(0,'#ffffff');g.addColorStop(1,'#d3d9e2');}
+    else if(isPos){g.addColorStop(0,'#f8b4b3');g.addColorStop(0.6,'#E24B4A');g.addColorStop(1,'#a32d2d');}
+    else{g.addColorStop(0,'#b9d8f6');g.addColorStop(0.6,'#378ADD');g.addColorStop(1,'#185fa5');}
+    ctx.save();ctx.shadowColor='rgba(19,35,58,0.28)';ctx.shadowBlur=10;ctx.shadowOffsetY=3;
+    ctx.beginPath(); ctx.arc(X,Y,r,0,Math.PI*2);ctx.fillStyle=g; ctx.fill();ctx.restore();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(X,Y,r,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle=COLORS[i]; ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(X,Y,r+2.5,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle=isZero?'#5f6b7a':'#fff'; ctx.font='800 '+Math.round(14+r*0.35)+'px Mulish,system-ui,sans-serif'; ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(isZero?'0':isPos?'+':'−',X,Y+1);ctx.textBaseline='alphabetic';
     const qv=c.q;
-    // étiquette sur fond blanc (les lignes de champ passent dessous), jamais rognée par le bord
-    const lt='Q'+(i+1)+' '+(qv>=0?'+':'')+qv+'nC',lw=ctx.measureText(lt).width;
-    const lx=Math.max(lw/2+3,Math.min(W-lw/2-3,px(c))),ly=py(c)+r+15>H-4?py(c)-r-7:py(c)+r+15;
-    ctx.fillStyle='rgba(255,255,255,0.85)';ctx.fillRect(lx-lw/2-3,ly-11,lw+6,15);
-    ctx.fillStyle=COLORS[i];ctx.fillText(lt,lx,ly);
+    // étiquette sur fond blanc arrondi (les lignes de champ passent dessous), jamais rognée par le bord
+    ctx.font='800 13px Mulish,system-ui,sans-serif';
+    const lt='Q'+(i+1)+' = '+(qv>=0?'+':'−')+Math.abs(qv)+' nC',lw=ctx.measureText(lt).width;
+    const lx=Math.max(lw/2+8,Math.min(W-lw/2-8,X));let ly=Y+r+18;
+    // sous la charge, sinon au-dessus, sinon plus bas : jamais sur une autre étiquette ni hors du cadre
+    const cand=[Y+r+18,Y-r-18,Y+r+42,Y-r-42].filter(v=>v>12&&v<H-12);
+    const free=v=>!placed.some(o=>Math.abs(o.x-lx)<(o.w+lw)/2+14&&Math.abs(o.y-v)<22)&&!charges.slice(0,nb).some((o,j)=>j!==i&&Math.abs(px(o)-lx)<lw/2+chargeRadius(o.q)+6&&Math.abs(py(o)-v)<chargeRadius(o.q)+12);
+    ly=cand.find(free)??cand[0]??Y+r+18;placed.push({x:lx,y:ly,w:lw});
+    ctx.fillStyle='rgba(255,255,255,0.92)';ctx.strokeStyle='#e3e7ed';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(lx-lw/2-6,ly-10,lw+12,20,8);ctx.fill();ctx.stroke();
+    ctx.fillStyle=COLORS[i]==='#378ADD'?'#185fa5':COLORS[i]==='#1D9E75'?'#0F6E56':'#a32d2d';ctx.textBaseline='middle';ctx.fillText(lt,lx,ly+0.5);ctx.textBaseline='alphabetic';
   }
 
   requestAnimationFrame(draw);
@@ -391,7 +415,7 @@ draw();
 </section></main>
 <aside class="sfa-side">
   <div class="sfa-list"><h2>PH8 · Électrostatique<span>4 simulations</span></h2><ol><li><a href="https://sfascienceforall-cell.github.io/forces-l-ctrostatique-/"><i>01</i>Forces électrostatiques</a></li><li><a class="on" aria-current="page" href="https://sfascienceforall-cell.github.io/champ-l-ctrostatique-/"><i>02</i>Champ électrostatique</a></li><li><a href="https://sfascienceforall-cell.github.io/simulations/charge-champ-uniforme/"><i>03</i>Une charge entre deux plaques</a></li><li><a href="https://sfascienceforall-cell.github.io/Conducteur/"><i>04</i>Conducteur</a></li></ol></div>
-  <div class="sfa-promo"><small>Envie d'aller plus loin ?</small><b>La prépa SFA : le cours complet, les exercices type examen corrigés et le suivi.</b><a href="#">Voir la prépa</a></div>
+  <div class="sfa-promo"><small>Envie d'aller plus loin ?</small><b>La prépa SFA : le cours complet, les exercices type examen corrigés et le suivi.</b><a href="https://sfascienceforall-cell.github.io/simulations/prepa/">Voir la prépa</a></div>
 </aside></div></div>
 <footer class="sfa-foot">Science For All · simulations interactives de physique</footer>
 </body>
